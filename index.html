@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Header files include bootstrap and jQuery for styling and collapse functions respectively -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+<script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+	<title>Famliy Tree</title>
+</head>
+<body class="container-fluid">
+<h1>
+	Family Tree
+</h1>
+<br>
+<br>
+<!-- The display of the data -->
+
+<!-- As the no. of columns are same in the given dataset, it has been hardcoded for n=2 -->
+
+<div class = "row">
+<div class="col-md-8 col-md-offset-2">
+
+<table class ="table"id="mytable" cellSpacing="10">
+<thead>
+	<tr>
+		<td></td>
+		<td><b>Tree</b></td>
+	</tr>
+</thead>
+
+</table>
+</div>
+</div>
+<script type="text/javascript" src="data.json"></script>
+<script type="text/javascript">
+var ob = JSON.parse(data);
+var table = document.getElementById('mytable');
+var i;
+var rn=1;
+var row;
+var topic;
+// var ma;
+// var ihc;
+//To get the child level. Basically to change indentation and colors, for better understandability
+var cLevel;
+
+for (var i=0; i<(Object.keys(ob).length);i++)
+{
+	row = table.insertRow(rn);
+	expand = row.insertCell(0);
+	topic = row.insertCell(1);
+	rn++;
+	topic.innerHTML = (ob[i][Object.keys(ob[i])[0]]);
+	cLevel = 0;
+	child(ob,i,cLevel);
+
+}
+
+function child(ob,i,cLevel)
+{
+	if ('children' in ob[i])
+	{	
+		var datatar = "";
+		for (var j=0; j<(Object.keys(ob[i].children).length);j++)
+		{
+			datatar+= "#c" + i + j;
+			if (j!=(Object.keys(ob[i].children).length)-1)
+			{
+				datatar+=",";
+			}
+
+		}
+		cLevel++;
+		expand.innerHTML = '<button type="button" data-toggle="collapse" data-target=' + datatar + '>+</button>';
+		for (var j=0; j<(Object.keys(ob[i].children).length);j++)
+		{
+			row = table.insertRow(rn);
+			expand = row.insertCell(0);
+			topic = row.insertCell(1);
+			rn++;
+			topic.innerHTML = (ob[i].children[j][Object.keys(ob[i].children[j])[0]]);
+			row.setAttribute("class","collapse");
+			row.setAttribute("id", "c" + i + j + "");
+			topic.style.paddingLeft = "" + cLevel*25 + "px";
+			//Recursive function Call
+		 child(ob[i].children,j,cLevel);
+
+		}
+	}
+}
+
+</script>
+</body>
+</html>
